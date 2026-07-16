@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>舆情AI看板</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #f5f7fa;
@@ -18,132 +19,720 @@
       --info: #3b82f6;
       --info-light: #eff6ff;
       --success: #10b981;
+      --success-light: #ecfdf5;
+      --purple: #8b5cf6;
+      --purple-light: #f5f3ff;
       --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-hover: 0 4px 6px rgba(0,0,0,0.1), 0 10px 20px rgba(0,0,0,0.08);
       --radius: 12px;
+      --radius-sm: 8px;
     }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+      font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--text-primary);
       line-height: 1.6;
+      min-height: 100vh;
     }
-    .container { max-width: 1400px; margin: 0 auto; padding: 24px 20px; }
-    .header { text-align: center; margin-bottom: 24px; }
-    .header h1 { font-size: 28px; font-weight: 700; }
-    .update-time { color: var(--text-secondary); font-size: 14px; }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+      padding-top: 8px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 .fire {
+      font-size: 32px;
+    }
+
+    .header .update-time {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    /* Overview Section */
+    .overview-section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .overview-section h2 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .overview-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 8px 6px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .stat-item .number {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--info);
+    }
+
+    .stat-item .label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .overview-summary {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      padding: 8px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    /* Filters */
     .filters-section {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 24px;
+      padding: 16px;
+      margin-bottom: 16px;
       box-shadow: var(--shadow);
+      border: 1px solid var(--border);
     }
+
     .filters-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
+      gap: 12px;
     }
+
     .filter-group label {
       display: block;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      color: var(--text-secondary);
       margin-bottom: 6px;
+      color: var(--text-primary);
     }
+
     .filter-group select {
       width: 100%;
-      padding: 10px 14px;
+      padding: 8px 12px;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 14px;
-      background: var(--bg);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      background: var(--card-bg);
+      color: var(--text-primary);
       cursor: pointer;
     }
+
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--info);
+      box-shadow: 0 0 0 3px var(--info-light);
+    }
+
+    /* Metrics */
     .metrics-row {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .metric-card .metric-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .metric-card .metric-value {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .metric-card .metric-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .metric-card.info .metric-value { color: var(--info); }
+    .metric-card.warning .metric-value { color: var(--warning); }
+    .metric-card.success .metric-value { color: var(--success); }
+    .metric-card.danger .metric-value { color: var(--danger); }
+
+    /* Warning Section */
+    .warning-section {
       margin-bottom: 24px;
     }
-    .metric-card {
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .warning-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 16px;
+    }
+
+    .warning-card {
       background: var(--card-bg);
       border-radius: var(--radius);
       padding: 20px;
       box-shadow: var(--shadow);
       border-left: 4px solid var(--info);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .metric-card.danger { border-left-color: var(--danger); }
-    .metric-card.warning { border-left-color: var(--warning); }
-    .metric-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
-    .metric-value { font-size: 26px; font-weight: 700; }
-    .section-title {
-      font-size: 18px;
+
+    .warning-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .warning-card.high { border-left-color: var(--danger); }
+    .warning-card.medium { border-left-color: var(--warning); }
+    .warning-card.low { border-left-color: var(--info); }
+
+    .warning-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .warning-title {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .warning-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .warning-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .warning-content {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .warning-keywords {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .warning-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .warning-duration {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* Posts/Comments Sections */
+    .posts-section, .comments-section {
+      margin-bottom: 24px;
+    }
+
+    /* Comments Grid - same compact list style */
+    .comments-grid {
+      width: 100%;
+    }
+
+    .comments-grid .posts-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .comments-grid .comment-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .comments-grid .comment-item:last-child {
+      border-bottom: none;
+    }
+
+    .comments-grid .comment-item:hover {
+      background: var(--bg);
+    }
+
+    .comments-grid .comment-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+      gap: 12px;
+    }
+
+    .comments-grid .comment-header-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .comments-grid .comment-text {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .comments-grid .comment-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .comments-grid .comment-tags .tag {
+      font-size: 10px;
+      padding: 1px 6px;
+    }
+
+    .comments-grid .comment-body {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .comments-grid .comment-summary {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .comments-grid .comment-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .comments-grid .comment-meta-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .comments-grid .comment-meta-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comments-grid .comment-meta-right .btn {
+      padding: 3px 10px;
+      font-size: 11px;
+    }
+    .posts-grid {
+      width: 100%;
+    }
+
+    .posts-grid .posts-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .posts-grid .post-item {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .posts-grid .post-item:last-child {
+      border-bottom: none;
+    }
+
+    .posts-grid .post-item:hover {
+      background: var(--bg);
+    }
+
+    .posts-grid .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+      gap: 12px;
+    }
+
+    .posts-grid .post-header-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .posts-grid .post-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .posts-grid .post-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .posts-grid .post-tags .tag {
+      font-size: 10px;
+      padding: 1px 6px;
+    }
+
+    .posts-grid .post-heat {
+      text-align: right;
+      min-width: 60px;
+      flex-shrink: 0;
+    }
+
+    .posts-grid .post-heat-number {
+      font-size: 16px;
       font-weight: 700;
-      margin-bottom: 16px;
+      color: var(--text-primary);
     }
+
+    .posts-grid .post-heat-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    .posts-grid .post-content {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .posts-grid .post-summary {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .posts-grid .post-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .posts-grid .post-meta-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .posts-grid .post-meta-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .posts-grid .post-meta-right .btn {
+      padding: 3px 10px;
+      font-size: 11px;
+    }
+
+    .events-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    .page-info {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
     .events-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
       gap: 16px;
+      margin-bottom: 16px;
     }
+
     .event-card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 20px;
       box-shadow: var(--shadow);
-      border-left: 3px solid var(--info);
+      border: 1px solid var(--border);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .event-card.high { border-left-color: var(--danger); }
-    .event-card.medium { border-left-color: var(--warning); }
-    .event-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      line-height: 1.4;
+
+    .event-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
     }
-    .event-meta {
-      display: flex;
-      gap: 12px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-    .event-content {
-      font-size: 13px;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-      line-height: 1.6;
-    }
-    .event-footer {
+
+    .event-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
     }
-    .tag {
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 11px;
+
+    .event-header-left {
+      flex: 1;
+    }
+
+    .event-title {
+      font-size: 16px;
       font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: 8px;
     }
+
+    .event-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
     .tag.risk-high { background: var(--danger-light); color: var(--danger); }
     .tag.risk-medium { background: var(--warning-light); color: var(--warning); }
     .tag.risk-low { background: var(--info-light); color: var(--info); }
-    .btn {
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      background: var(--info);
-      color: white;
+    .tag.source { background: var(--purple-light); color: var(--purple); }
+    .tag.emotion { background: var(--success-light); color: var(--success); }
+    .tag.heat-rising { background: var(--danger-light); color: var(--danger); }
+    .tag.heat-stable { background: var(--info-light); color: var(--info); }
+    .tag.heat-falling { background: var(--success-light); color: var(--success); }
+
+    .event-heat {
+      text-align: right;
+      min-width: 80px;
     }
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
+
+    .heat-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .heat-label {
+      font-size: 11px;
       color: var(--text-secondary);
     }
+
+    .heat-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--bg);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .heat-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.5s ease-out;
+    }
+
+    .heat-bar-fill.high { background: var(--danger); }
+    .heat-bar-fill.medium { background: var(--warning); }
+    .heat-bar-fill.low { background: var(--info); }
+
+    .event-body {
+      margin-bottom: 12px;
+    }
+
+    .event-content {
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .event-summary {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      padding: 8px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+    }
+
+    .event-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .event-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .heat-trend {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .heat-trend.rising { color: var(--danger); }
+    .heat-trend.stable { color: var(--info); }
+    .heat-trend.falling { color: var(--success); }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: var(--info-light);
+      border-color: var(--info);
+    }
+
+    .pagination button.active {
+      background: var(--info);
+      color: white;
+      border-color: var(--info);
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination .page-info {
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 0 8px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+    }
+
+    /* Loading */
     .loading-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -153,29 +742,155 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      transition: opacity 0.3s;
     }
-    .loading-overlay.hidden { display: none; }
+
+    .loading-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .spinner {
-      width: 40px; height: 40px;
+      width: 40px;
+      height: 40px;
       border: 3px solid var(--border);
       border-top-color: var(--info);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--info);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--info);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--info-light);
+    }
+
+    .keyword-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      background: var(--bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .risk-badge.high { background: var(--danger-light); color: var(--danger); }
+    .risk-badge.medium { background: var(--warning-light); color: var(--warning); }
+    .risk-badge.low { background: var(--info-light); color: var(--info); }
+
+    @media (max-width: 1024px) {
+      .warning-cards, .events-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px 12px 40px; }
+      .header h1 { font-size: 22px; }
+      .overview-stats { grid-template-columns: repeat(2, 1fr); }
+      .filters-grid { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: repeat(2, 1fr); }
+      .warning-cards, .events-grid { grid-template-columns: 1fr; }
+      .events-toolbar { flex-direction: column; align-items: flex-start; }
+      .warning-header { flex-direction: column; }
+      .event-header { flex-direction: column; }
+      .event-heat { text-align: left; }
+    }
+
+    @media (max-width: 480px) {
+      .overview-stats { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
+  <!-- 密码保护 -->
+  <div id="pwdOverlay" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Inter','Noto Sans SC',sans-serif;">
+    <div style="background:var(--card-bg);padding:40px 48px;border-radius:var(--radius);box-shadow:var(--shadow);text-align:center;max-width:400px;width:90%;border:1px solid var(--border);">
+      <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+      <h2 style="font-size:20px;font-weight:700;margin-bottom:8px;color:var(--text-primary);">舆情AI看板</h2>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:24px;">请输入访问密码</p>
+      <input id="pwdInput" type="password" placeholder="输入密码" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;margin-bottom:12px;box-sizing:border-box;background:var(--card-bg);color:var(--text-primary);outline:none;" onkeydown="if(event.key==='Enter')checkPwd()">
+      <button onclick="checkPwd()" style="width:100%;padding:12px 16px;background:var(--info);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;">进入看板</button>
+      <p id="pwdError" style="color:var(--danger);font-size:13px;margin-top:12px;display:none;">密码错误，请重试</p>
+    </div>
+  </div>
+  <script>
+    function checkPwd() {
+      const input = document.getElementById('pwdInput').value;
+      const correct = 'bilibili';
+      if (input === correct) {
+        document.getElementById('pwdOverlay').remove();
+      } else {
+        document.getElementById('pwdError').style.display = 'block';
+        document.getElementById('pwdInput').value = '';
+        document.getElementById('pwdInput').focus();
+      }
+    }
+  </script>
+
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <div style="margin-top:16px;color:var(--text-secondary)">正在加载舆情数据...</div>
+    <div class="loading-text">正在加载舆情数据...</div>
   </div>
 
   <div class="container">
     <header class="header">
-      <h1>🔥 舆情AI看板</h1>
+      <h1><span class="fire">🔥</span> 舆情AI看板</h1>
       <div class="update-time" id="updateTime">数据汇总时间：加载中...</div>
     </header>
+
+    <section class="overview-section">
+      <h2>📊 数据总览</h2>
+      <div class="overview-stats" id="overviewStats"></div>
+      <div class="overview-summary" id="overviewSummary"></div>
+    </section>
 
     <section class="filters-section">
       <div class="filters-grid">
@@ -184,26 +899,48 @@
           <select id="filterSource">
             <option value="all">全部平台</option>
             <option value="微博">微博</option>
+            <option value="贴吧">贴吧</option>
             <option value="知乎">知乎</option>
             <option value="雪球">雪球</option>
-            <option value="贴吧">贴吧</option>
+            <option value="B站">B站</option>
           </select>
         </div>
         <div class="filter-group">
-          <label>风险等级</label>
-          <select id="filterRisk">
+          <label>事件类型</label>
+          <select id="filterType">
+            <option value="all">全部类型</option>
+            <option value="国际关系">国际关系</option>
+            <option value="政策">政策</option>
+            <option value="舆论热点">舆论热点</option>
+            <option value="敏感话题">敏感话题</option>
+            <option value="平台运营">平台运营</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>情绪导向</label>
+          <select id="filterEmotion">
+            <option value="all">全部情绪</option>
+            <option value="反抗">反抗</option>
+            <option value="争议性">争议性</option>
+            <option value="理性讨论">理性讨论</option>
+            <option value="非负向">非负向</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>B站相关性</label>
+          <select id="filterBili">
             <option value="all">全部</option>
-            <option value="high">高危</option>
-            <option value="medium">中危</option>
-            <option value="low">低危</option>
+            <option value="related">B站相关</option>
+            <option value="unrelated">非B站相关</option>
           </select>
         </div>
         <div class="filter-group">
           <label>时间范围</label>
-          <select id="filterTime">
-            <option value="1hour" selected>最近1小时</option>
-            <option value="3hours">最近3小时</option>
-            <option value="24hours">最近24小时</option>
+          <select id="filterTimeRange">
+            <option value="3" selected>近3小时</option>
+            <option value="6">近6小时</option>
+            <option value="12">近12小时</option>
+            <option value="24">近24小时</option>
             <option value="all">全部</option>
           </select>
         </div>
@@ -212,15 +949,25 @@
 
     <div class="metrics-row" id="metricsRow"></div>
 
-    <section style="margin-bottom: 32px;">
-      <div class="section-title">📰 舆情事件列表</div>
-      <div class="events-grid" id="eventsGrid"></div>
+    <section class="warning-section" id="warningSection">
+      <div class="section-title">🚨 B站相关+热度>100</div>
+      <div class="warning-cards" id="warningCards"></div>
     </section>
+
+    <section class="posts-section" id="postsSection">
+      <div class="section-title">📰 其他动态（近3小时）</div>
+      <div class="events-toolbar">
+        <div class="page-info" id="postsResultCount">共 0 条</div>
+      </div>
+      <div class="posts-grid" id="postsGrid"></div>
+      <div class="pagination" id="postsPagination"></div>
+    </section>
+
+    <!-- 评论列表已隐藏 -->
   </div>
 
   <script>
-    const allData = 
-[
+let allData = [
   {
     "id": "豆瓣_193319_000",
     "title": "B站官方偷字幕🤮",
@@ -242,7 +989,10 @@
     "heatTrend": "stable",
     "url": "https://www.douban.com/people/256433521/status/",
     "summary": "Rea!Sao：B站官方偷字幕，获4228赞274回复",
-    "duration": "18小时"
+    "duration": "18小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "豆瓣_193319_001",
@@ -266,7 +1016,10 @@
     "heatTrend": "stable",
     "url": "https://www.douban.com/people/219268970/status/4515133973",
     "summary": "stay foolish：B站博主在同学去世动态下的评论，3215赞130回复",
-    "duration": "18小时"
+    "duration": "18小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "豆瓣_193319_002",
@@ -289,7 +1042,10 @@
     "heatTrend": "stable",
     "url": "https://www.douban.com/people/179356456/status/",
     "summary": "肆月叁周俩天：b站终于癫成了我想要的样子，1971赞278回复",
-    "duration": "18小时"
+    "duration": "18小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "豆瓣_193319_003",
@@ -313,7 +1069,10 @@
     "heatTrend": "stable",
     "url": "https://www.douban.com/group/729802/",
     "summary": "一年一度喜剧大赛小组：B站晚会讨论楼，11赞1392回复",
-    "duration": "18小时"
+    "duration": "18小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "豆瓣_193319_004",
@@ -337,7 +1096,10 @@
     "heatTrend": "stable",
     "url": "https://www.douban.com/group/677194/",
     "summary": "韩娱基地小组：b站盗用事件，装了拦截插件确实会变快，1109赞274回复",
-    "duration": "18小时"
+    "duration": "18小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "搜狗微信_101237_000",
@@ -360,7 +1122,10 @@
     "heatTrend": "stable",
     "url": "https://mp.weixin.qq.com/s/xxx",
     "summary": "科技观察者：B站审核新规今日生效",
-    "duration": "14小时"
+    "duration": "14小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_000",
@@ -384,7 +1149,10 @@
     "heatTrend": "rising",
     "url": "https://weibo.com",
     "summary": "B站审核对政治敏感、版权内容强硬，但对软色情、低俗直播审核松弛，形成双重矛盾。2022年审核员工猝死事件引发关注。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_001",
@@ -408,7 +1176,10 @@
     "heatTrend": "rising",
     "url": "https://weibo.com",
     "summary": "大量用户反映未收到违规提示直接被封，最长365天。恶意举报团体利用漏洞射号，申诉困难。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_002",
@@ -433,7 +1204,10 @@
     "heatTrend": "rising",
     "url": "https://weibo.com",
     "summary": "B站向未成年人新注册账号推荐擦边视频，未登录状态也推送低俗内容。媒体实测证实，中国妇女报、人民网观点点名批评。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_003",
@@ -457,7 +1231,10 @@
     "heatTrend": "stable",
     "url": "https://weibo.com",
     "summary": "深夜直播软色情泛滥、AI合成不雅视频、弹幕涉黄引流。王源起诉B站名誉权纠纷，全国扫黄打非办多次约谈处罚。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_004",
@@ -481,7 +1258,10 @@
     "heatTrend": "stable",
     "url": "https://weibo.com",
     "summary": "粉丝群体发起集中举报，涵盖恶意剪辑、盗摄、侵权等。反黑教程流传，举报操作指南成规模。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_005",
@@ -505,7 +1285,10 @@
     "heatTrend": "stable",
     "url": "https://weibo.com",
     "summary": "圆谷官方奥特曼人气投票引发迪迦与赛罗粉丝争吵，吧务组遭冲后集体辞职。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_006",
@@ -529,7 +1312,10 @@
     "heatTrend": "rising",
     "url": "https://weibo.com",
     "summary": "米哈游以不正当竞争纠纷将B站及乔某某等告上法庭，定于2026年8月19日开庭。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_007",
@@ -553,7 +1339,10 @@
     "heatTrend": "stable",
     "url": "https://weibo.com",
     "summary": "用户反映视频上传长时间卡在审核，通过后突然下架。同内容不同平台标准迥异，二次元审核尤其严格。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_008",
@@ -577,7 +1366,10 @@
     "heatTrend": "stable",
     "url": "https://weibo.com",
     "summary": "UP主反映播放量异常停滞、首页点击率为零、粉丝无法刷到更新。误判商业推广、题材敏感导致限流。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_009",
@@ -601,7 +1393,10 @@
     "heatTrend": "stable",
     "url": "https://weibo.com",
     "summary": "B站发布天气提示，所有未使用门票可全额退款。ChinaJoy 2026将参展。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "未知_114318_010",
@@ -625,7 +1420,10 @@
     "heatTrend": "stable",
     "url": "https://weibo.com",
     "summary": "7月15-16日哔哩哔哩美股涨超4-5%，港股涨超1-5%。...",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "雪球_141107_006",
@@ -647,7 +1445,10 @@
     "heatTrend": "stable",
     "url": "https://xueqiu.com/3574619060/400496334",
     "summary": "",
-    "duration": "24分钟"
+    "duration": "24分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "雪球_141107_007",
@@ -669,7 +1470,10 @@
     "heatTrend": "stable",
     "url": "https://xueqiu.com/1521578281/400491109",
     "summary": "",
-    "duration": "41分钟"
+    "duration": "41分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "雪球_141107_008",
@@ -691,7 +1495,10 @@
     "heatTrend": "stable",
     "url": "https://xueqiu.com/8589463483/400477401",
     "summary": "",
-    "duration": "2小时"
+    "duration": "2小时",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "微博_141126_000",
@@ -713,7 +1520,10 @@
     "heatTrend": "stable",
     "url": "https://s.weibo.com/weibo?q=B站",
     "summary": "",
-    "duration": "2分钟"
+    "duration": "2分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "微博_141126_001",
@@ -735,7 +1545,10 @@
     "heatTrend": "stable",
     "url": "https://s.weibo.com/weibo?q=B站",
     "summary": "",
-    "duration": "2分钟"
+    "duration": "2分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "微博_141126_002",
@@ -757,7 +1570,10 @@
     "heatTrend": "stable",
     "url": "https://s.weibo.com/weibo?q=B站+审核",
     "summary": "",
-    "duration": "2分钟"
+    "duration": "2分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "微博_141126_003",
@@ -779,7 +1595,10 @@
     "heatTrend": "stable",
     "url": "https://s.weibo.com/weibo?q=哔哩哔哩",
     "summary": "",
-    "duration": "2分钟"
+    "duration": "2分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "微博_141126_004",
@@ -801,7 +1620,10 @@
     "heatTrend": "stable",
     "url": "https://s.weibo.com/weibo?q=哔哩哔哩",
     "summary": "",
-    "duration": "2分钟"
+    "duration": "2分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   },
   {
     "id": "微博_141126_005",
@@ -823,118 +1645,436 @@
     "heatTrend": "stable",
     "url": "https://s.weibo.com/weibo?q=哔哩哔哩",
     "summary": "",
-    "duration": "2分钟"
+    "duration": "2分钟",
+    "forward": 0,
+    "comments_count": 0,
+    "likes": 0
   }
-]
-;
+];
 
     let filteredData = [...allData];
+    let postsPage = 1;
+    let commentsPage = 1;
+    const pageSize = 10;
 
-    function calculateDuration(isoString) {
-      if (!isoString) return '未知';
-      const dt = new Date(isoString);
-      const now = new Date();
-      const diffMs = now - dt;
-      if (diffMs < 60000) return '刚刚';
-      if (diffMs < 3600000) return Math.floor(diffMs / 60000) + '分钟';
-      if (diffMs < 86400000) return Math.floor(diffMs / 3600000) + '小时';
-      if (diffMs < 2592000000) return Math.floor(diffMs / 86400000) + '天';
-      if (diffMs < 31536000000) return Math.floor(diffMs / 2592000000) + '个月';
-      return Math.floor(diffMs / 31536000000) + '年';
+    const filters = {
+      source: 'all',
+      type: 'all',
+      emotion: 'all',
+      bili: 'all',
+      timeRange: '3'
+    };
+
+    const sort = {
+      field: 'heat',
+      order: 'desc'
+    };
+
+    // Utility functions
+    function formatTime(isoString) {
+      const date = new Date(isoString);
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+    function getRiskLabel(level) {
+      const map = { high: '高危', medium: '中危', low: '低危' };
+      return map[level] || level;
+    }
+
+    function getHeatTrendLabel(trend) {
+      const map = { rising: '🔥 高水温', stable: '➡️ 稳定', falling: '❄️ 降温' };
+      return map[trend] || trend;
+    }
+
+    function getHeatTrendClass(trend) {
+      return trend;
+    }
+
+    function truncate(str, len) {
+      if (!str) return '';
+      return str.length > len ? str.slice(0, len) + '...' : str;
+    }
+
+    function isBiliRelatedText(d) {
+      if (!d) return false;
+      const keywords = ['b站', 'bilibili', '破站', '哔哩哔哩', 'bili'];
+      const text = ((d.title || '') + ' ' + (d.content || '')).toLowerCase();
+      return keywords.some(k => text.includes(k.toLowerCase()));
+    }
+
+    // Render functions
+    function renderOverview() {
+      const biliEvents = allData.filter(d => isBiliRelatedText(d) && d.heat > 100);
+      const stats = {};
+      ['微博', '贴吧', '知乎', '雪球', 'B站'].forEach(s => {
+        const count = biliEvents.filter(d => d.source === s).length;
+        if (count > 0) stats[s] = count;
+      });
+
+      const statsHtml = Object.entries(stats).map(([source, count]) => `
+        <div class="stat-item">
+          <div class="number">${count}</div>
+          <div class="label">${source}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('overviewStats').innerHTML = statsHtml || '<div class="stat-item"><div class="number">0</div><div class="label">暂无数据</div></div>';
+
+      const total = biliEvents.length;
+      const summary = total > 0
+        ? `数据汇总周期内，B站相关+热度>100共 <strong>${total}</strong> 起，其中${Object.entries(stats).map(([s, c]) => `${s}${c}起`).join('、')}。整体概述：当前舆情主要集中在平台运营和内容审核相关话题，创作者社区对近期政策调整关注度较高，部分话题呈现情绪分化态势。`
+        : '当前筛选条件下暂无B站相关+热度>100的舆情数据。';
+
+      document.getElementById('overviewSummary').innerHTML = summary;
     }
 
     function renderMetrics() {
-      const total = filteredData.length;
-      const biliCount = filteredData.filter(d => d.isBilibiliRelated).length;
-      const highRisk = filteredData.filter(d => d.riskLevel === 'high').length;
-      const avgHeat = total > 0 ? Math.round(filteredData.reduce((a, b) => a + b.heat, 0) / total) : 0;
-      
-      document.getElementById('metricsRow').innerHTML = `
-        <div class="metric-card info">
-          <div class="metric-label">事件总数</div>
-          <div class="metric-value">${total}</div>
+      const metrics = [
+        { label: '事件总数', value: filteredData.length, sub: '基于当前筛选', class: 'info' },
+        { label: '平均热度', value: filteredData.length > 0 ? Math.round(filteredData.reduce((a, b) => a + b.heat, 0) / filteredData.length) : 0, sub: '基于当前筛选', class: 'warning' },
+        {
+          label: '情绪分布',
+          value: filteredData.length > 0
+            ? (() => {
+                const emotions = {};
+                filteredData.forEach(d => { emotions[d.emotion] = (emotions[d.emotion] || 0) + 1; });
+                const top = Object.entries(emotions).sort((a, b) => b[1] - a[1])[0];
+                return top ? top[0] : '-';
+              })()
+            : '-',
+          sub: '主导情绪',
+          class: 'success'
+        },
+        {
+          label: 'B站关联程度',
+          value: filteredData.length > 0
+            ? Math.round(filteredData.reduce((a, b) => a + b.biliScore, 0) / filteredData.length) + '%'
+            : '0%',
+          sub: '平均关联度',
+          class: 'danger'
+        }
+      ];
+
+      document.getElementById('metricsRow').innerHTML = metrics.map(m => `
+        <div class="metric-card ${m.class}">
+          <div class="metric-label">${m.label}</div>
+          <div class="metric-value">${m.value}</div>
+          <div class="metric-sub">${m.sub}</div>
         </div>
-        <div class="metric-card warning">
-          <div class="metric-label">B站相关</div>
-          <div class="metric-value">${biliCount}</div>
-        </div>
-        <div class="metric-card ${highRisk > 0 ? 'danger' : 'info'}">
-          <div class="metric-label">高危舆情</div>
-          <div class="metric-value">${highRisk}</div>
-        </div>
-        <div class="metric-card info">
-          <div class="metric-label">平均热度</div>
-          <div class="metric-value">${avgHeat}</div>
-        </div>
-      `;
+      `).join('');
     }
 
-    function renderEvents() {
-      const grid = document.getElementById('eventsGrid');
-      if (filteredData.length === 0) {
-        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div style="font-size:48px;margin-bottom:16px;">📭</div><p>当前筛选条件下暂无数据</p></div>';
+    function renderWarnings() {
+      const warningData = allData.filter(d => {
+        return isBiliRelatedText(d) && d.heat > 100;
+      }).sort((a, b) => {
+        const riskOrder = { high: 0, medium: 1, low: 2 };
+        if (riskOrder[a.riskLevel] !== riskOrder[b.riskLevel]) {
+          return riskOrder[a.riskLevel] - riskOrder[b.riskLevel];
+        }
+        return new Date(b.publishTime) - new Date(a.publishTime);
+      }).slice(0, 10);
+
+      if (warningData.length === 0) {
+        document.getElementById('warningCards').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">✅</div>
+            <p>当前未发现高危舆情事件</p>
+          </div>
+        `;
         return;
       }
-      
-      grid.innerHTML = filteredData.map(event => `
-        <div class="event-card ${event.riskLevel}">
-          <div class="event-title">${event.title}</div>
-          <div class="event-meta">
-            <span class="tag source">${event.source}</span>
-            <span class="tag risk-${event.riskLevel}">${event.riskLevel === 'high' ? '高危' : event.riskLevel === 'medium' ? '中危' : '低危'}</span>
-            <span>${event.emotion}</span>
-            <span>${event.publisher}</span>
-            <span>${calculateDuration(event.publishTime)}</span>
+
+      document.getElementById('warningCards').innerHTML = warningData.map(event => `
+        <div class="warning-card ${event.riskLevel}">
+          <div class="warning-header">
+            <div class="warning-title">${event.title}</div>
+            <div class="warning-tags">
+              <span class="tag source">${event.source}</span>
+              <span class="tag heat-${event.heatTrend}">${getHeatTrendLabel(event.heatTrend)}</span>
+            </div>
           </div>
-          <div class="event-content">${event.summary || event.content}</div>
-          <div class="event-footer">
-            <span style="font-size:12px;color:var(--text-secondary)">热度: ${event.heat}</span>
-            <a href="${event.url}" target="_blank" class="btn">查看详情 →</a>
+          <div class="warning-meta">
+            <span>👤 ${event.publisher}</span>
+            <span>🕐 ${formatTime(event.publishTime)}</span>
+            <span>🔥 热度 ${event.heat}</span>
+          </div>
+          <div class="warning-content">
+            <div class="preview">${truncate(event.content, 80)}</div>
+          </div>
+          <div class="warning-keywords">
+            ${event.keywords.map(k => `<span class="keyword-tag">${k}</span>`).join('')}
+          </div>
+          <div class="warning-footer">
+            <span class="warning-duration">⏱️ 持续 ${event.duration}</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span class="risk-badge ${event.riskLevel}">${getRiskLabel(event.riskLevel)}</span>
+              <a href="${event.url}" target="_blank" class="btn btn-primary">查看详情 →</a>
+            </div>
           </div>
         </div>
       `).join('');
     }
 
-    function applyFilters() {
-      const source = document.getElementById('filterSource').value;
-      const risk = document.getElementById('filterRisk').value;
-      const timeRange = document.getElementById('filterTime').value;
-      
-      filteredData = allData.filter(d => {
-        if (source !== 'all' && d.source !== source) return false;
-        if (risk !== 'all' && d.riskLevel !== risk) return false;
-        
-        if (timeRange !== 'all') {
-          const publishTime = new Date(d.publishTime);
-          const now = new Date();
-          const diffMs = now - publishTime;
-          switch (timeRange) {
-            case '1hour': if (diffMs > 3600000) return false; break;
-            case '3hours': if (diffMs > 10800000) return false; break;
-            case '24hours': if (diffMs > 86400000) return false; break;
+    function renderPosts() {
+      const start = (postsPage - 1) * pageSize;
+      const end = start + pageSize;
+      const nonWarningData = filteredData.filter(d => !(isBiliRelatedText(d) && d.heat > 100));
+      const postsData = nonWarningData.slice(start, end);
+      const totalPages = Math.ceil(nonWarningData.length / pageSize);
+
+      document.getElementById('postsResultCount').textContent = `共 ${nonWarningData.length} 条`;
+
+      // 动态更新标题
+      const timeRangeLabels = { '3': '近3小时', '6': '近6小时', '12': '近12小时', '24': '近24小时', 'all': '全部' };
+      const timeLabel = timeRangeLabels[filters.timeRange] || '近3小时';
+      document.querySelector('#postsSection .section-title').textContent = `📰 其他动态（${timeLabel}）`;
+
+      if (postsData.length === 0) {
+        document.getElementById('postsGrid').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📭</div>
+            <p>当前时间范围内暂无动态数据</p>
+          </div>
+        `;
+        document.getElementById('postsPagination').innerHTML = '';
+        return;
+      }
+
+      const postsHtml = postsData.map(event => `
+        <div class="post-item">
+          <div class="post-header">
+            <div class="post-header-left">
+              <div class="post-title">${event.title}</div>
+              <div class="post-tags">
+                <span class="tag risk-${event.riskLevel}">${getRiskLabel(event.riskLevel)}</span>
+                <span class="tag source">${event.source}</span>
+                ${event.keywords.slice(0, 3).map(k => `<span class="tag emotion">${k}</span>`).join('')}
+              </div>
+            </div>
+            <div class="post-heat">
+              <div class="post-heat-number">${event.heat.toLocaleString()}</div>
+              <div class="post-heat-label">热度</div>
+              <div class="heat-bar">
+                <div class="heat-bar-fill ${event.heat >= 200 ? 'high' : event.heat >= 50 ? 'medium' : 'low'}" style="width: ${Math.min(event.heat / (window.maxHeat || 1) * 100, 100)}%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="post-content">${truncate(event.content, 120)}</div>
+          <div class="post-summary">
+            <strong>📋</strong> ${event.summary || '暂无概述'}
+            <span style="margin-left:12px;color:var(--text-secondary);">🎭 ${event.emotion} · 📌 ${event.eventType}</span>
+            ${event.comments.length > 0 ? `<span style="margin-left:12px;color:var(--info);">💬 ${event.comments.length} 条评论</span>` : ''}
+          </div>
+          <div class="post-meta-row">
+            <div class="post-meta-left">
+              <span>👤 ${event.publisher}</span>
+              <span>🕐 ${formatTime(event.publishTime)}</span>
+            </div>
+            <div class="post-meta-right">
+              <span class="heat-trend ${getHeatTrendClass(event.heatTrend)}">${getHeatTrendLabel(event.heatTrend)}</span>
+              <a href="${event.url}" target="_blank" class="btn btn-ghost">查看详情 →</a>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('postsGrid').innerHTML = `<div class="posts-card">${postsHtml}</div>`;
+
+      let pagesHtml = '';
+      if (totalPages > 1) {
+        pagesHtml += `<button ${postsPage === 1 ? 'disabled' : ''} onclick="goToPostsPage(${postsPage - 1})">上一页</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          if (i === 1 || i === totalPages || (i >= postsPage - 1 && i <= postsPage + 1)) {
+            pagesHtml += `<button class="${i === postsPage ? 'active' : ''}" onclick="goToPostsPage(${i})">${i}</button>`;
+          } else if (i === postsPage - 2 || i === postsPage + 2) {
+            pagesHtml += `<span class="page-info">...</span>`;
           }
         }
+        pagesHtml += `<button ${postsPage === totalPages ? 'disabled' : ''} onclick="goToPostsPage(${postsPage + 1})">下一页</button>`;
+      }
+      document.getElementById('postsPagination').innerHTML = pagesHtml;
+    }
+
+    function renderComments() {
+      // 评论区域已隐藏，跳过渲染
+      const commentsGrid = document.getElementById('commentsGrid');
+      if (!commentsGrid) return;
+      
+      let allComments = [];
+      filteredData.forEach(event => {
+        if (event.comments && event.comments.length > 0) {
+          event.comments.forEach(c => {
+            allComments.push({
+              ...c,
+              parentTitle: event.title,
+              parentSource: event.source,
+              parentUrl: event.url,
+              parentPublisher: event.publisher,
+              parentTime: event.publishTime,
+              parentRisk: event.riskLevel
+            });
+          });
+        }
+      });
+
+      const start = (commentsPage - 1) * pageSize;
+      const end = start + pageSize;
+      const pageComments = allComments.slice(start, end);
+      const totalPages = Math.ceil(allComments.length / pageSize);
+
+      document.getElementById('commentsResultCount').textContent = `共 ${allComments.length} 条`;
+
+      if (pageComments.length === 0) {
+        document.getElementById('commentsGrid').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">💬</div>
+            <p>当前时间范围内暂无评论数据</p>
+          </div>
+        `;
+        document.getElementById('commentsPagination').innerHTML = '';
+        return;
+      }
+
+      document.getElementById('commentsGrid').innerHTML = `<div class="posts-card">${pageComments.map(c => `
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-header-left">
+              <div class="comment-text">💬 ${truncate(c.text, 80)}</div>
+              <div class="comment-tags">
+                <span class="tag risk-${c.parentRisk}">${getRiskLabel(c.parentRisk)}</span>
+                <span class="tag source">${c.parentSource}</span>
+              </div>
+            </div>
+          </div>
+          <div class="comment-summary">
+            <strong>📰</strong> ${c.parentTitle}
+            <span style="margin-left:12px;color:var(--text-secondary);">👤 ${c.author}</span>
+          </div>
+          <div class="comment-meta-row">
+            <div class="comment-meta-left">
+              <span>📰 ${c.parentPublisher}</span>
+              <span>🕐 ${formatTime(c.parentTime)}</span>
+            </div>
+            <div class="comment-meta-right">
+              <a href="${c.parentUrl}" target="_blank" class="btn btn-ghost">查看原帖 →</a>
+            </div>
+          </div>
+        </div>
+      `).join('')}</div>`;
+
+      let pagesHtml = '';
+      if (totalPages > 1) {
+        pagesHtml += `<button ${commentsPage === 1 ? 'disabled' : ''} onclick="goToCommentsPage(${commentsPage - 1})">上一页</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          if (i === 1 || i === totalPages || (i >= commentsPage - 1 && i <= commentsPage + 1)) {
+            pagesHtml += `<button class="${i === commentsPage ? 'active' : ''}" onclick="goToCommentsPage(${i})">${i}</button>`;
+          } else if (i === commentsPage - 2 || i === commentsPage + 2) {
+            pagesHtml += `<span class="page-info">...</span>`;
+          }
+        }
+        pagesHtml += `<button ${commentsPage === totalPages ? 'disabled' : ''} onclick="goToCommentsPage(${commentsPage + 1})">下一页</button>`;
+      }
+      document.getElementById('commentsPagination').innerHTML = pagesHtml;
+    }
+
+    function applyFilters() {
+      filteredData = allData.filter(d => {
+        if (filters.source !== 'all' && d.source !== filters.source) return false;
+        if (filters.type !== 'all' && d.eventType !== filters.type) return false;
+        if (filters.emotion !== 'all' && d.emotion !== filters.emotion) return false;
+        if (filters.bili === 'related' && !isBiliRelatedText(d)) return false;
+        if (filters.bili === 'unrelated' && isBiliRelatedText(d)) return false;
+        
+        // 时间范围过滤（默认近3小时）
+        if (filters.timeRange !== 'all') {
+          const hours = parseInt(filters.timeRange);
+          const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
+          const itemTime = new Date(d.publishTime);
+          if (itemTime < cutoff) return false;
+        }
+        
         return true;
       });
-      
+
+      filteredData.sort((a, b) => {
+        let valA, valB;
+        switch (sort.field) {
+          case 'heat': valA = a.heat; valB = b.heat; break;
+          case 'publishTime': valA = new Date(a.publishTime); valB = new Date(b.publishTime); break;
+          case 'comments.length': valA = a.comments.length; valB = b.comments.length; break;
+          case 'biliScore': valA = a.biliScore; valB = b.biliScore; break;
+          default: valA = a.heat; valB = b.heat;
+        }
+        if (sort.order === 'asc') return valA > valB ? 1 : -1;
+        return valA < valB ? 1 : -1;
+      });
+
+      // 计算当前最大热度，用于进度条相对比例
+      window.maxHeat = Math.max(...filteredData.map(d => d.heat), 1);
+
+      postsPage = 1;
+      commentsPage = 1;
       renderMetrics();
-      renderEvents();
+      renderPosts();
+      // renderComments(); // 评论区域已隐藏
+    }
+
+    function goToPostsPage(page) {
+      postsPage = page;
+      renderPosts();
+      document.getElementById('postsSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function goToCommentsPage(page) {
+      // 评论区域已隐藏，跳过
+      const commentsSection = document.getElementById('commentsSection');
+      if (!commentsSection) return;
+      commentsPage = page;
+      renderComments();
+      commentsSection.scrollIntoView({ behavior: 'smooth' });
     }
 
     function updateTime() {
       const now = new Date();
       const pad = n => String(n).padStart(2, '0');
-      document.getElementById('updateTime').textContent = 
-        `数据汇总时间：${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      const timeStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      document.getElementById('updateTime').textContent = `数据汇总时间：${timeStr}`;
     }
 
-    document.getElementById('filterSource').addEventListener('change', applyFilters);
-    document.getElementById('filterRisk').addEventListener('change', applyFilters);
-    document.getElementById('filterTime').addEventListener('change', applyFilters);
+    // Event listeners
+    document.getElementById('filterSource').addEventListener('change', e => {
+      filters.source = e.target.value;
+      applyFilters();
+    });
 
+    document.getElementById('filterType').addEventListener('change', e => {
+      filters.type = e.target.value;
+      applyFilters();
+    });
+
+    document.getElementById('filterEmotion').addEventListener('change', e => {
+      filters.emotion = e.target.value;
+      applyFilters();
+    });
+
+    document.getElementById('filterBili').addEventListener('change', e => {
+      filters.bili = e.target.value;
+      applyFilters();
+    });
+
+    document.getElementById('filterTimeRange').addEventListener('change', e => {
+      filters.timeRange = e.target.value;
+      applyFilters();
+    });
+
+    // Initialize
     updateTime();
-    renderMetrics();
-    renderEvents();
+    setInterval(updateTime, 1000);
+    renderOverview();
+    renderWarnings();
+    applyFilters();
     document.getElementById('loadingOverlay').classList.add('hidden');
   </script>
 </body>
